@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>For You, Baby</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    position: relative;
+    overflow: hidden;
+    background-size: 200% 200%;
+    animation: gradientShift 30s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* floating translucent circles to create a calm sincere vibe */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    width: 600px;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    filter: blur(100px);
+    animation: float1 20s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px;
+    right: -150px;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: float2 25s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(30px) translateX(20px); }
+  }
+
+  @keyframes float2 {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-25px) translateX(-15px); }
+  }
+
+  /* Heart floating container */
+  .hearts-container {
+    pointer-events: none; /* so hearts don't block clicks */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: visible;
+    z-index: 0;
+  }
+
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff6b81;
+    transform: rotate(-45deg);
+    opacity: 0.8;
+    animation: floatUp 8s linear infinite;
+  }
+
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff6b81;
+    border-radius: 50%;
+  }
+
+  .heart::before {
+    top: -10px;
+    left: 0;
+  }
+
+  .heart::after {
+    left: 10px;
+    top: 0;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) rotate(-45deg);
+      opacity: 0.8;
+    }
+    80% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: translateY(-120vh) rotate(-45deg);
+      opacity: 0;
+    }
+  }
+
+  /* Adjust size variation & animation delay for each heart */
+  .heart:nth-child(1) {
+    left: 10%;
+    animation-duration: 7s;
+    width: 15px; height: 15px;
+  }
+  .heart:nth-child(1)::before, .heart:nth-child(1)::after {
+    width: 15px; height: 15px;
+  }
+
+  .heart:nth-child(2) {
+    left: 25%;
+    animation-duration: 9s;
+    animation-delay: 2s;
+  }
+
+  .heart:nth-child(3) {
+    left: 40%;
+    animation-duration: 8s;
+    animation-delay: 4s;
+    width: 12px; height: 12px;
+  }
+  .heart:nth-child(3)::before, .heart:nth-child(3)::after {
+    width: 12px; height: 12px;
+  }
+
+  .heart:nth-child(4) {
+    left: 60%;
+    animation-duration: 10s;
+    animation-delay: 1s;
+  }
+
+  .heart:nth-child(5) {
+    left: 75%;
+    animation-duration: 7.5s;
+    animation-delay: 3s;
+    width: 18px; height: 18px;
+  }
+  .heart:nth-child(5)::before, .heart:nth-child(5)::after {
+    width: 18px; height: 18px;
+  }
+
+  .heart:nth-child(6) {
+    left: 85%;
+    animation-duration: 9.5s;
+    animation-delay: 0s;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    pointer-events: none;
+    flex-direction: column;
+    z-index: 1; /* above hearts */
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .slide img.slide-img {
+    max-width: 80%;
+    max-height: 300px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
+  h1 {
+    font-size: 52px;
+    color: #ff6b81;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 30px;
+    max-width: 900px;
+    line-height: 1.6;
+    min-height: 1.6em;
+  }
+
+  .tap {
+    font-size: 16px;
+    opacity: 0.7;
+    margin-top: 25px;
+  }
+
+  /* FINAL SLIDE */
+  .final h1 {
+    font-size: 70px;
+  }
+
+  .final p {
+    font-size: 34px;
+  }
+
+  /* Buttons on final slide */
+  #choiceButtons button {
+    background: #ff6b81;
+    border: none;
+    padding: 12px 30px;
+    margin: 0 15px;
+    font-size: 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 107, 129, 0.6);
+    transition: background-color 0.3s ease;
+  }
+
+  #choiceButtons button:hover:not(:disabled) {
+    background: #ff5066;
+  }
+
+  #choiceButtons button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  #responseMessage {
+    margin-top: 20px;
+    font-size: 24px;
+    color: #ffd6e8;
+    min-height: 30px;
+  }
+
+  /* RESPONSIVE STYLES */
+  @media (max-width: 768px) {
+    .slide img.slide-img {
+      max-width: 90%;
+      max-height: 250px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 22px;
+      max-width: 90%;
+      min-height: auto;
+    }
+
+    .tap {
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+    .final h1 {
+      font-size: 48px;
+    }
+
+    .final p {
+      font-size: 24px;
+    }
+
+    #choiceButtons button {
+      font-size: 18px;
+      padding: 10px 24px;
+      margin: 0 10px;
+    }
+
+    #responseMessage {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    h1 {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    .final h1 {
+      font-size: 38px;
+    }
+
+    .final p {
+      font-size: 20px;
+    }
+
+    .tap {
+      font-size: 12px;
+    }
+
+    #choiceButtons button {
+      font-size: 16px;
+      padding: 8px 18px;
+      margin: 0 8px;
+    }
+
+    #responseMessage {
+      font-size: 18px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- AUDIO -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg" />
+</audio>
+
+<audio id="heartbeat" loop>
+  <source src="heartbeat.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- Heart floating container -->
+<div class="hearts-container" aria-hidden="true">
+  <div class="heart" style="top: 90%; animation-delay: 0s;"></div>
+  <div class="heart" style="top: 85%; animation-delay: 2s;"></div>
+  <div class="heart" style="top: 80%; animation-delay: 4s;"></div>
+  <div class="heart" style="top: 75%; animation-delay: 1s;"></div>
+  <div class="heart" style="top: 70%; animation-delay: 3s;"></div>
+  <div class="heart" style="top: 65%; animation-delay: 0.5s;"></div>
+</div>
+
+<!-- SLIDES -->
+
+<!-- FRONT PAGE -->
+<div class="slide active">
+  <div>
+    <h1>Baby 🤍</h1>
+    <p>Please take a moment to read this.</p>
+    <div class="tap">Tap to continue</div>
+  </div>
+</div>
+
+<!-- SLIDE 1 -->
+<div class="slide">
+  <img src="image0.png" alt="Baby smiling" class="slide-img" />
+  <p data-text="Baby, I know I hurt you po. 😔"></p>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide">
+  <img src="image2.gif" alt="Thinking deeply" class="slide-img" />
+  <p data-text="Di ko na kailangan magpaliwanag since pangalawang beses na"></p>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide">
+  <img src="image3.gif" alt="Heartbroken" class="slide-img" />
+  <p data-text="Pinagsisisihan ko po Baby. 💔"></p>
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide">
+  <img src="image4.png" alt="Caring and love" class="slide-img" />
+  <p data-text="Baby, sorry na po. Di po ako natuto sa una."></p>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide">
+  <img src="image5.png" alt="Afraid of loss" class="slide-img" />
+  <p data-text="Bati na po tayo please?"></p>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide">
+  <img src="image6.png" alt="Afraid of loss" class="slide-img" />
+  <p data-text="Maghihintay po ako here, baby."></p>
+</div>
+
+<!-- SLIDE 7 -->
+<div class="slide">
+  <img src="image1.jpg" alt="Afraid of loss" class="slide-img" />
+  <p data-text="Btw, cute mo here oh! Worth it talaga kaya kelangan suyuen malala!!"></p>
+</div>
+
+<!-- FINAL SLIDE -->
+<div class="slide final">
+  <div>
+    <h1 data-text="I’m truly sorry, Baby."></h1>
+    <p data-text="Alam ko mahirap na toh since pangalawa na po, but I want you to know po that my heart is sincere po. I care deeply about you, and sana ready ka na po makipag usap saken and ready ka na po mapatawad ako. 🤍"></p>
+
+    <!-- Buttons -->
+    <div id="choiceButtons" style="margin-top: 30px;">
+      <button id="btnYes">Yes 💖</button>
+      <button id="btnNo">No 💔</button>
+    </div>
+
+    <!-- Message to show after choice -->
+    <div id="responseMessage"></div>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const music = document.getElementById('bgMusic');
+  const heartbeat = document.getElementById('heartbeat');
+
+  let index = 0;
+  let started = false;
+
+  function typeText(element, text, speed = 50) {
+    let i = 0;
+    element.textContent = '';
+    const interval = setInterval(() => {
+      element.textContent += text.charAt(i);
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, speed);
+  }
+
+  function showSlide(i) {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[i].classList.add('active');
+
+    slides[i].querySelectorAll('[data-text]').forEach(el => {
+      typeText(el, el.getAttribute('data-text'));
+    });
+  }
+
+  document.body.addEventListener('click', () => {
+    if (started) return;
+    started = true;
+
+    music.volume = 0.5;
+    heartbeat.volume = 0.2;
+
+    music.play();
+    heartbeat.play();
+
+    showSlide(1);
+    index = 1;
+
+    let interval = setInterval(() => {
+      index++;
+      if (index < slides.length - 1) {
+        showSlide(index);
+      } else {
+        showSlide(index); // final slide
+        clearInterval(interval);
+      }
+    }, 7000); // 7 seconds per slide
+  });
+
+  // Choice buttons behavior
+  const btnYes = document.getElementById('btnYes');
+  const btnNo = document.getElementById('btnNo');
+  const responseMessage = document.getElementById('responseMessage');
+
+  btnYes.addEventListener('click', () => {
+    responseMessage.textContent = "Thank you so much, Baby! I'm sorry baby haaa huhuhu iloveyouuuu baby koo. (Take a screenshot and send mo po sa messenger 💖)";
+    btnYes.disabled = true;
+    btnNo.disabled = true;
+  });
+
+  btnNo.addEventListener('click', () => {
+    responseMessage.textContent = "I understand, Baby. I'll wait patiently and respect your feelings. 💔 (Take a screenshot and send mo po sa messenger 😔)";
+    btnYes.disabled = true;
+    btnNo.disabled = true;
+  });
+</script>
+
+</body>
+</html>
